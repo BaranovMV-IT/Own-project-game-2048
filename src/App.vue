@@ -22,5 +22,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  justify-content: center;
+  align-items: center;
 }
 </style>
