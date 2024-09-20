@@ -119,7 +119,12 @@ export default {
           }
         }
       }
-      this.fillRandomCells();
+      if(!this.compareTwoObject(this.cellData,obj)){
+        this.cellData = obj;
+        if(this.isThereAnEmptyCell()) this.fillRandomCells();
+      }
+      this.isGameOver();
+      this.isGameWon();
     },
     clickDown(){
       let obj = {...this.cellData};
@@ -146,7 +151,12 @@ export default {
           }
         }
       }
-      this.fillRandomCells();
+      if(!this.compareTwoObject(this.cellData,obj)){
+        this.cellData = obj;
+        if(this.isThereAnEmptyCell()) this.fillRandomCells();
+      }
+      this.isGameOver();
+      this.isGameWon();
     },
     clickRight(){
       let obj = {...this.cellData};
@@ -173,7 +183,12 @@ export default {
           }
         }
       }
-      this.fillRandomCells();
+      if(!this.compareTwoObject(this.cellData,obj)){
+        this.cellData = obj;
+        if(this.isThereAnEmptyCell()) this.fillRandomCells();
+      }
+      this.isGameOver();
+      this.isGameWon();
     },
     clickLeft(){
       let obj = {...this.cellData};
@@ -200,12 +215,77 @@ export default {
           }
         }
       }
-      this.fillRandomCells();
+      if(!this.compareTwoObject(this.cellData,obj)){
+        this.cellData = obj;
+        if(this.isThereAnEmptyCell()) this.fillRandomCells();
+      }
+      this.isGameOver();
+      this.isGameWon();
+    },
+    compareTwoObject(obj1, obj2){
+      return JSON.stringify(obj1) == JSON.stringify(obj2)
+    },
+    isThereAnEmptyCell(){
+      for(let key in this.cellData){
+        if(this.cellData[key] == 0){
+          return true
+        }
+      }
+      return false
+    },
+    isGameOver(){
+      let obj = {...this.cellData};
+
+      if(!this.isThereAnEmptyCell()){
+        let pr = true;
+        for(let row=1; row<=4; row++){
+          for(let col=1; col<=4; col++){
+            let ob = obj[row.toString()+col.toString()];
+            
+            if(ob == obj[String(row-1)+String(col)] || ob == obj[String(row)+String(col+1)] || 
+              ob == obj[String(row+1)+String(col)] || ob == obj[String(row)+String(col-1)]
+            ){
+              pr = false;
+              break;
+            }
+          }
+          if(!pr) break;
+        }
+
+        if(pr) alert("Вы проиграли!");
+      }
+    },
+    setScore(increment){
+      this.score += increment;
+      
+      if(this.score > this.record){
+        this.record = this.score;
+        localStorage.setItem('record', this.record.toString());
+      }
+    },
+    isGameWon(){
+      for(let key in this.cellData){
+        if(this.cellData[key] == 2048){
+          alert("Вы выиграли!");
+          break;
+        }
+      }
     }
   },
   created(){
     this.fillCellData();
     this.fillRandomCells(2);
+
+    try {
+      const locStore = Number(localStorage.getItem('record'));
+      if(typeof locStore == 'number' && locStore > 0){
+        this.record = Number(locStore);
+      } else {
+        localStorage.setItem('record', '0');
+      }
+    } catch(e){
+      console.log(e);
+    }
 
     document.addEventListener('keydown', (event) => {
       let key = event.key;
