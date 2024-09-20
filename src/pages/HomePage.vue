@@ -93,11 +93,137 @@ export default {
         case 2048:
           return 'rgb(236,194,49)'
       }
+    },
+    clickUp(){
+      let obj = {...this.cellData};
+
+      for(let row=2; row<=4; row++){
+        for(let col=1; col<=4; col++){
+          let id = row.toString() + col.toString();
+          if(obj[id]){
+            let pr = false;
+            for(let rw=row; rw>=2; rw--){
+              id = rw.toString() + col.toString();
+              const upperId = String(rw - 1) + col.toString();
+              if(obj[upperId] == 0){
+                obj[upperId] = obj[id];
+                obj[id] = 0;
+              }
+              if(!pr && obj[upperId] == obj[id]){
+                obj[upperId] += obj[id];
+                obj[id] = 0;
+                pr = true;
+                this.setScore(obj[upperId]);
+              }
+            }
+          }
+        }
+      }
+      this.fillRandomCells();
+    },
+    clickDown(){
+      let obj = {...this.cellData};
+
+      for(let row=3; row>=1; row--){
+        for(let col=1; col<=4; col++){
+          let id = row.toString() + col.toString();
+          if(obj[id]){
+            let pr = false;
+            for(let rw=row; rw<=3; rw++){
+              id = rw.toString() + col.toString();
+              const lowerId = String(rw + 1) + col.toString();
+              if(obj[lowerId] == 0){
+                obj[lowerId] = obj[id];
+                obj[id] = 0;
+              }
+              if(!pr && obj[lowerId] == obj[id]){
+                obj[lowerId] += obj[id];
+                obj[id] = 0;
+                pr = true;
+                this.setScore(obj[lowerId]);
+              }
+            }
+          }
+        }
+      }
+      this.fillRandomCells();
+    },
+    clickRight(){
+      let obj = {...this.cellData};
+
+      for(let col=3; col>=1; col--){
+        for(let row=1; row<=4; row++){
+          let id = row.toString() + col.toString();
+          if(obj[id]){
+            let pr = false;
+            for(let cl=col; cl<=3; cl++){
+              id = row.toString() + cl.toString();
+              const onRightId = row.toString() + String(cl + 1);
+              if(obj[onRightId] == 0){
+                obj[onRightId] = obj[id];
+                obj[id] = 0;
+              }
+              if(!pr && obj[onRightId] == obj[id]){
+                obj[onRightId] += obj[id];
+                obj[id] = 0;
+                pr = true;
+                this.setScore(obj[onRightId]);
+              }
+            }
+          }
+        }
+      }
+      this.fillRandomCells();
+    },
+    clickLeft(){
+      let obj = {...this.cellData};
+
+      for(let col=2; col<=4; col++){
+        for(let row=1; row<=4; row++){
+          let id = row.toString() + col.toString();
+          if(obj[id]){
+            let pr = false;
+            for(let cl=col; cl>=2; cl--){
+              id = row.toString() + cl.toString();
+              const onLeftId = row.toString() + String(cl - 1);
+              if(obj[onLeftId] == 0){
+                obj[onLeftId] = obj[id];
+                obj[id] = 0;
+              }
+              if(!pr && obj[onLeftId] == obj[id]){
+                obj[onLeftId] += obj[id];
+                obj[id] = 0;
+                pr = true;
+                this.setScore(obj[onLeftId]);
+              }
+            }
+          }
+        }
+      }
+      this.fillRandomCells();
     }
   },
   created(){
     this.fillCellData();
     this.fillRandomCells(2);
+
+    document.addEventListener('keydown', (event) => {
+      let key = event.key;
+      switch(key){
+        case 'ArrowLeft':
+          this.clickLeft();
+          break;
+        case 'ArrowUp':
+          this.clickUp();
+          break;
+        case 'ArrowRight':
+          this.clickRight();
+          break;
+        case 'ArrowDown':
+          this.clickDown();
+          break;
+      }
+    });
   }
 }
 </script>
