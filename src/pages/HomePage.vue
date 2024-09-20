@@ -5,16 +5,25 @@
       <div class="block__header__info">
         <div class="block__header__info__item">
           <div class="block__header__info__item__title">СЧЁТ</div>
-          <div class="block__header__info__item__result"></div>
+          <div class="block__header__info__item__result">{{ score }}</div>
         </div>
         <div class="block__header__info__item">
           <div class="block__header__info__item__title">РЕКОРД</div>
-          <div class="block__header__info__item__result"></div>
+          <div class="block__header__info__item__result">{{ record }}</div>
         </div>
       </div>
     </div>
     <div class="block__board">
-      <div class="block__board__cell"></div>
+      <div class="block__board__cell"
+        v-for="cell in Object.keys(cellData)" 
+        :key="cell"
+        :style="{
+          backgroundColor: paintCellByNumber(cellData[cell]),
+          color: cellData[cell] == 2 || cellData[cell] == 4 ? 'rgb(119,110,101)' : ''
+        }"
+      >
+        {{ cellData[cell] ? cellData[cell] : "" }}
+      </div>
     </div>
   </div>
 </template>
@@ -24,8 +33,71 @@ export default {
   name: 'HomePage',
   data(){
     return {
-
+      cellData: {},
+      score: 0,
+      record: 0
     }
+  },
+  methods: {
+    fillCellData(){
+      let obj = {};
+
+      for(let row=1; row<=4; row++){
+        for(let col=1; col<=4; col++){
+          const id = row.toString() + col.toString();
+          obj[id] = 0;
+        }
+      }
+
+      this.cellData = obj;
+    },
+    fillRandomCells(count = 1){
+      let obj = {...this.cellData};
+
+      let counter = 0;
+      while(counter != count){
+        const id = String(Math.floor(Math.random() * (4 - 1 + 1)) + 1) + String(Math.floor(Math.random() * (4 - 1 + 1)) + 1);
+          
+        if(obj[id] == 0){
+          obj[id] = 2;
+          counter++
+        }
+      }
+
+      this.cellData = obj;
+    },
+    paintCellByNumber(number){
+      switch(number){
+        case 0:
+          return 'rgb(205,193,180)'
+        case 2:
+          return 'rgb(238,228,218)'
+        case 4:
+          return 'rgb(237,224,200)'
+        case 8:
+          return 'rgb(242,177,121)'
+        case 16:
+          return 'rgb(245,149,99)'
+        case 32:
+          return 'rgb(246,124,95)'
+        case 64:
+          return 'rgb(246,94,59)'
+        case 128:
+          return 'rgb(237,207,114)'
+        case 256:
+          return 'rgb(237,204,97)'
+        case 512:
+          return 'rgb(234,199,77)'
+        case 1024:
+          return 'rgb(236,197,62)'
+        case 2048:
+          return 'rgb(236,194,49)'
+      }
+    }
+  },
+  created(){
+    this.fillCellData();
+    this.fillRandomCells(2);
   }
 }
 </script>
